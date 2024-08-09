@@ -4,12 +4,13 @@ import (
 	"crypto/sha256"
 	"errors"
 	"fmt"
-	"github.com/google/shlex"
 	"io"
 	"io/ioutil"
 	"os"
 	"os/exec"
 	"strings"
+
+	"github.com/google/shlex"
 )
 
 type CompilerCommand struct {
@@ -20,6 +21,9 @@ type CompilerCommand struct {
 }
 
 func ParseClangCommandString(commands string) (*CompilerCommand, error) {
+	// Replace all backslashes with forward slashes to make Windows paths compatible with shlex
+	commands = strings.ReplaceAll(commands, "\\", "/")
+
 	words, err := shlex.Split(commands)
 	if err != nil {
 		return nil, err
